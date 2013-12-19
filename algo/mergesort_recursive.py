@@ -1,3 +1,8 @@
+'''
+Due to the Merge Sort implementations I found on the internet are all non-recursive versions,
+so I decided to write one by my own, without refercing anyone's code, starting from scratch.
+'''
+
 from math import *
 
 def merge(a):
