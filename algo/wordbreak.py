@@ -18,7 +18,7 @@ def wordbreak_recursive(s):
 def wordbreak_dp(s):
   map = [False] * (len(s)+1) # +1 becuz we r not using map[0] (to make code more readable)
 
-  for i in range(1, len(s)):
+  for i in range(1, len(s)): # range: 1 to length
     #print "i", i, "s[0:i]", s[0:i]
     if map[i] == False and s[0:i] in dict: # found match!
       map[i] = True
