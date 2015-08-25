@@ -1,27 +1,36 @@
-def quicksort(a, start):
-    print "start=%s" % (start)
-    if start == (len(a)-1):
+def quicksort(a, start, end):
+    print
+    print "start=%s, end=%s" % (start, end)
+    if start == end or start > end:
         return
 
-    pivot = len(a)-1
     wall = start
+    index = start
     
-    while start != len(a)-2:
-        if a[start] < a[len(a)-1]:
-            t = a[start]
-            a[start] = a[wall]
+    while index != end:
+        print "index", index, "wall", wall
+        if a[index] < a[end]:
+            t = a[index]
+            a[index] = a[wall]
             a[wall] = t
             wall = wall + 1
-        start = start + 1
+        index = index + 1
 
-    if a[len(a)-1] < a[wall]:
-        t = a[len(a)-1]
-        a[len(a)-1] = a[wall]
+    print "end", end, "wall", wall
+    if a[end] < a[wall]:
+        t = a[end]
+        a[end] = a[wall]
         a[wall] = t
-        wall = wall + 1
 
-    quicksort(a, wall)
+    print "wall=%s, a: %s" % (wall, a)
 
-a = [6,5,1,3,8,4,7,9,2]
-quicksort(a, 0)
+    quicksort(a, start, wall-1)
+    quicksort(a, wall+1, end)
+
+
+#a = [6,5,1,3,8,4,7,9,2]
+#a = [6,5,1,3,2,4,7,9,8]
+a = [12,47,85,23,67,43,45,77]
+print "origin: %s" % (a)
+quicksort(a, 0, len(a)-1)
 print a
