@@ -16,7 +16,9 @@ class TokenBucket:
 
     def get_tokens(self):
         now = time()
+        print "now:", now
         if self._tokens < self.capacity:
+            print "add:", self.rate * (now - self.timestamp)
             self._tokens += self.rate * (now - self.timestamp)
             #print "delta", (now - self.timestamp)
             self._tokens = min(self._tokens, self.capacity)
