@@ -10,6 +10,10 @@
  * skipping calculations.
  * 
  * Write a program to determine which cup is left after all others have been removed. 
+ *
+ * Usage:
+ *   $ javac CupChallenge.java
+ *   $ java CupChallenge 100
  * 
  * @author  Lans
  * @version 1.0
@@ -135,11 +139,7 @@ public class CupChallenge {
 
     int size = Integer.parseInt(args[0]);
     LinkedNode[] nodes = createCups(size);
-    LinkedNode start = nodes[0];
-    LinkedNode end = nodes[1];
-
-    int r = cupChallenge(start, end, size);
-    System.out.println();
-    System.out.println("Ans:" + r);
+    int r = cupChallenge(nodes[0], nodes[1], size);
+    System.out.println("\nThe number of last cup: #" + r);
   }
 }
