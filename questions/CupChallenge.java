@@ -9,35 +9,18 @@
  * remains. A cup that is removed from the circle is gone forever, and is not considered in subsequent 
  * skipping calculations.
  * 
- * Write a program to determine which cup is left after all others have been removed. Please send us 
- * the answer (in Java) and your working code to wxie@popsugar.com.
+ * Write a program to determine which cup is left after all others have been removed. 
  * 
- * Your code should print the answer to the cup challenge when there are 100 cups. Also, please provide the answer to the cup challenge to Walt as well.
- * 
- * Example:
- * 
- * Cups are marked with a C, removed cups are marked as X. Not pictured in this example is that the cups wrap around in a circle.
- * 
- * Start: 
- * C C C C C C C C C C ...
- * 
- * Step 1: cup #1 is removed 
- * X C C C C C C C C C ...
- * 
- * Step 2: cup #2 is skipped, cup #3 is removed 
- * X C X C C C C C C C ...
- * 
- * Step 3: cups #4, #5 are skipped, cup #6 is removed 
- * X C X C C X C C C C ...
- * 
- * Step 3: cups #7, #8, #9 are skipped, cup #10 is removed 
- * X C X C C X C C C X ...
- * 
- * And so on.
- *
+ * @author  Lans
+ * @version 1.0
+ * @since   2015.09.11
  */
-public class Cups {
+public class CupChallenge {
   
+  /**
+   * Datastrucutre(single Linked List) to present cups.
+   *
+   */
   public static class LinkedNode {
     private LinkedNode next;
     private int value;
@@ -62,7 +45,13 @@ public class Cups {
       this.value = value;
     }
   }
-
+  
+  /**
+   * Initialize a list of cups base on size.
+   *
+   * @param size num of cups
+   * @return LinkedNode[] start node and end node
+   */
   public static LinkedNode[] createCups(int size) {
     LinkedNode start = null, end = null, prev = null;
     for(int i=0; i<size; i++) {
@@ -73,6 +62,7 @@ public class Cups {
         start = ln;
       }
 
+      // Link node
       if (prev != null) {
         prev.setNext(ln);
       }
@@ -81,26 +71,10 @@ public class Cups {
       if (i == size-1) {
         ln.setNext(start);
         end = ln;
-        
-        System.out.println("Tail: " + ln.getValue());
-        System.out.println("Tail's next: " + ln.getNext().getValue());
       }
       
       prev = ln;
     }
-
-    // Print out
-    int count = size;
-    LinkedNode current = start;
-    while (current.getNext() != null && count != 0) {
-      System.out.print(current.getValue());
-      if (count != 1) {
-        System.out.print(",");
-      }
-      current = current.getNext();
-      count--;
-    }
-    System.out.println();
 
     LinkedNode[] r = new LinkedNode[2];
     r[0] = start;
@@ -108,6 +82,15 @@ public class Cups {
     return r;
   }
 
+  /**
+   * Algorithm to remove cups until there's only 1 cup left.
+   * P.S Use remain ([num to skip]/[size]) to accelerate in 2nd half of the process when [num to skip] is bigger than [size]
+   *
+   * @param  start
+   * @param  end
+   * @param  size
+   * @return the number of the last cup
+   */
   public static int cupChallenge(LinkedNode start, LinkedNode end, int size) {
     int skip = 1;
     LinkedNode current = start, prev = end, next = null;
@@ -127,8 +110,12 @@ public class Cups {
       }
       
       // Skip nodes
-      for(int i=0; i<skip; i++) {
-        System.out.println("Cup #" + current.getValue() + " skipped. (" + (i+1) + "/" + skip + ")");
+      int remain = skip;
+      if (skip >= size) {
+        remain = skip % size;
+      }
+      for(int i=0; i<remain; i++) {
+        System.out.println("Cup #" + current.getValue() + " skipped. (" + (i+1) + "/" + remain + " of total:" + size + ")");
         prev = current;
         current = current.getNext();
       }
@@ -148,10 +135,9 @@ public class Cups {
     LinkedNode[] nodes = createCups(size);
     LinkedNode start = nodes[0];
     LinkedNode end = nodes[1];
-    System.out.println("start=" + start.getValue());
-    System.out.println("end=" + end.getValue());
 
     int r = cupChallenge(start, end, size);
+    System.out.println();
     System.out.println("Ans:" + r);
   }
 }
