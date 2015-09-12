@@ -109,11 +109,13 @@ public class CupChallenge {
         continue;
       }
       
-      // Skip nodes
+      // Accelerate
       int remain = skip;
       if (skip >= size) {
         remain = skip % size;
       }
+
+      // Skip Nodes
       for(int i=0; i<remain; i++) {
         System.out.println("Cup #" + current.getValue() + " skipped. (" + (i+1) + "/" + remain + " of total:" + size + ")");
         prev = current;
