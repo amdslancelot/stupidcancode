@@ -1,15 +1,27 @@
+'''
+Given a string, determine if a permutation of the string could form a palindrome.
+
+For example,
+"code" -> False, "aab" -> True, "carerac" -> True.
+
+Hint:
+
+Consider the palindromes of odd vs even length. What difference do you notice?
+'''
+
 class Solution(object):
     def canPermutePalindrome(self, s):
         """
         :type s: str
         :rtype: bool
         """
-        map = {}
+        map = {} #word count map
         for e in s:
             if e in map:
                 map[e] += 1
             else:
                 map[e] = 1
+
         num_of_odd_char = 0
         for k,v in map.items():
             if v == 1:
