@@ -1,4 +1,4 @@
-import argparse, sys, re, time
+import argparse, sys, re, time, os
 
 def toParam(s):
   if not re.match(r'(\+|\-)?[0-9]+', s):
@@ -116,14 +116,50 @@ def tail_block(fname, n, buf_size=512):
   return buf
 
 def follow(fname):
-  with open(fname, 'r') as fh:
+  with open(fname) as fh:
+    mtime = os.path.getmtime(fname)
     fh.seek(0,2)
+    pos = fh.tell()
+    print "pos:", pos
+    print "size:", os.stat(fname).st_size
+    while True:
+      new_mtime = os.path.getmtime(fname)
+      print "new_mtime:", new_mtime, "mtime", mtime, "delta:", new_mtime - mtime
+      if new_mtime - mtime > 0:
+        print "change"
+        
+        print "size:", os.stat(fname).st_size
+        fh.seek(pos)
+        new_content = fh.read()
+        print "new1:", new_content
+        if new_content:
+          print "new2:", new_content
+        mtime = new_mtime
+      time.sleep(1)
+
+def follow2(fname):
+  with open(fname, 'r') as fh:
+    '''
+    fh.seek(0,2)
+    pos = fh.tell()
     while True:
       new = fh.read()
+      pos = fh.tell()
+      fh.seek(pos)
       print "new:", new
       if new:
         sys.stdout.write(new)
       time.sleep(1)
+    '''
+    while True:
+      pos = fh.tell()
+      line = fh.readline()
+      if not line:
+        time.sleep(1)
+        fh.seek(pos)
+      else:
+        yield 
+        #sys.stdout.write(line)
 
 if __name__ == "__main__":
   parser = argparse.ArgumentParser(prog="Tail", description="The tail utility displays the contents of file or, by default, its standard input, to the standard output.")
