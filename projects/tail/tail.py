@@ -87,7 +87,7 @@ def tail_block(fname, n, buf_size=512):
       pos = file_size
     n = abs(n)
 
-    while block_count < n-1 and file_size > 0:
+    while block_count < n and file_size > 0:
       if buf_size > file_size:
         buf_size = file_size
 
