@@ -48,6 +48,11 @@ class FindAnagram:
         self.most_num_of_words = collect
       return
 
+    sorted_word = "".join(sorted(word))
+    if sorted_word in self.dp:
+      self.find("", collect + self.dp[sorted_word])
+      return
+
     alphabets = self.word_to_letter_map(word)
     l = len(self.arr)
     for j in xrange(l):
@@ -68,7 +73,14 @@ class FindAnagram:
         new_word = new_word.replace(w, "")
 
       if isAllLettersValid: #no non-existed letters
-        self.find(new_word, collect + [self.arr[j]])
+        new_collect = collect + [self.arr[j]]
+        key = "".join(sorted("".join(new_collect)))
+        if key in self.dp:
+          if len(new_collect) > len(self.dp[key]):
+            self.dp[key] = new_collect
+        else:
+          self.dp[key] = new_collect
+        self.find(new_word, new_collect)
   
   def isFinished(self, chart):
     for k in xrange(26): #check if has unfinished letters
