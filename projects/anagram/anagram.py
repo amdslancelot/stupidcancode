@@ -5,12 +5,22 @@ class FindAnagram:
     self.most_num_of_words = []
     self.just_two_words = []
     self.just_two_words_final = False
+    self.arr = self.get_word_list()
 
-  def func(self, word):
-    with open("words2.txt") as fh:
-      word = re.sub('[^A-Za-z0-9]+', '', word.lower())
-      print "word:", word
+  def word_to_letter_map(self, word):
+    word = re.sub('[^A-Za-z0-9]+', '', word.lower())
+    print "word:", word
 
+    alphabets_i = [0]*26
+    for w in word:
+      t = ord(w)-97
+      alphabets_i[t] += 1
+    print word, alphabets_i
+
+    return alphabets_i
+
+  def get_word_list(self):
+    with open("words.txt") as fh:
       print fh.read().count("\n")
       fh.seek(0,0)
 
@@ -18,66 +28,59 @@ class FindAnagram:
       for i in xrange(len(arr)):
         arr[i] = re.sub('[^A-Za-z0-9]+', '', arr[i].lower())
 
-      l = len(arr)
-      #print arr
+      return arr
+    return None
 
-      alphabets_i = [0]*26
-      for w in word:
-        if w == '':
-          continue
+  def func(self, word):
+    alphabets_i = self.word_to_letter_map(word)
+    dp = {}
+    collect = []
+    l = len(self.arr)
+    for j in xrange(l):
+      if len(self.arr[j]) <= 1:
+        continue
+      if word == self.arr[j]:
+        continue
+      if len(word) < len(self.arr[j]):
+        continue
+      if word == self.arr[j]:
+        continue
+      if self.arr[j] in dp:
+        continue
+      dp[self.arr[j]] = 1
+      print "%s vs arr[%s]=%s, letters=%s" % (word, j, self.arr[j], alphabets_i)
+
+      alphabets_i_clone = self.clone(alphabets_i)
+
+      #check if any letters not in alphabets chart
+      isAllLettersValid = True
+      for w in self.arr[j].lower():
         t = ord(w)-97
-        if t not in xrange(len(alphabets_i)):
-          print "error:", arr[i]
-          exit(1)
-        alphabets_i[t] += 1
-      print word, alphabets_i
+        if alphabets_i_clone[t] == 0:
+          isAllLettersValid = False
+          break
+        alphabets_i_clone[ord(w)-97] -= 1
+        #word = word.replace(w, "")
 
-      dp = {}
-      collect = []
-      for j in xrange(l):
-        if len(arr[j]) <= 1:
-          continue
-        if word == arr[j]:
-          continue
-        #print "test: arr[%s]=%s vs arr[%s]=%s" % (i, arr[i], j, arr[j])
-        if len(word) < len(arr[j]):
-          continue
-        if word == arr[j]:
-          continue
-        if arr[j] in dp:
-          continue
-        dp[arr[j]] = 1
-        print "%s vs arr[%s]=%s, letters=%s" % (word, j, arr[j], alphabets_i)
+      print "isAllLettersValid:", isAllLettersValid
 
-        alphabets_i_clone = self.clone(alphabets_i)
-
-        #check if any letters not in alphabets chart
-        isAllLettersValid = True
-        for w in arr[j].lower():
-          t = ord(w)-97
-          if alphabets_i_clone[t] == 0:
-            isAllLettersValid = False
-            break
-          alphabets_i_clone[ord(w)-97] -= 1
-
-        print "isAllLettersValid:", isAllLettersValid
-
-        if isAllLettersValid: #no non-existed letters
-          alphabets_i = alphabets_i_clone
-          collect.append(arr[j]) #add
-        else: #there is non-existed letters
-          continue
-    
-        print "collect:", collect
-        if self.isFinished(alphabets_i): #no letters left
-          if len(collect) == 2 and not self.just_two_words_final:
-            self.just_two_words = collect
-            self.just_two_words_final = True
-          if len(collect) > len(self.most_num_of_words):
-            self.most_num_of_words = collect
-          return
-        else: #still has letters left
-          continue #Keep searching
+      if isAllLettersValid: #no non-existed letters
+        alphabets_i = alphabets_i_clone
+        collect.append(self.arr[j]) #add
+      else: #there is non-existed letters
+        continue
+  
+      print "collect:", collect
+      if self.isFinished(alphabets_i): #no letters left
+        if len(collect) == 2 and not self.just_two_words_final:
+          self.just_two_words = collect
+          self.just_two_words_final = True
+        if len(collect) > len(self.most_num_of_words):
+          self.most_num_of_words = collect
+        return
+      else: #still has letters left
+        #self.func(word)
+        continue #Keep searching
 
   def isFinished(self, chart):
     for k in xrange(26): #check if has unfinished letters
