@@ -38,6 +38,7 @@ class FindAnagram:
 
   def find(self, word, collect):
     if len(word) == 1:
+      self.dp["".join(sorted("".join(collect)))] = -1
       return
 
     if word == "":
@@ -48,8 +49,11 @@ class FindAnagram:
         self.most_num_of_words = collect
       return
 
+    #lookup dp
     sorted_word = "".join(sorted(word))
     if sorted_word in self.dp:
+      if self.dp[sorted_word] == -1:
+        return
       self.find("", collect + self.dp[sorted_word])
       return
 
@@ -70,17 +74,24 @@ class FindAnagram:
           isAllLettersValid = False
           break
         alphabets_clone[t] -= 1
-        new_word = new_word.replace(w, "")
+        new_word = new_word.replace(w, "", 1)
 
+      new_collect = collect + [self.arr[j]] #dp
+      key = "".join(sorted("".join(new_collect))) #dp
       if isAllLettersValid: #no non-existed letters
-        new_collect = collect + [self.arr[j]]
-        key = "".join(sorted("".join(new_collect)))
+        #dp
         if key in self.dp:
-          if len(new_collect) > len(self.dp[key]):
-            self.dp[key] = new_collect
+          if self.dp[key] != -1:
+            if len(new_collect) > len(self.dp[key]):
+              self.dp[key] = new_collect
         else:
           self.dp[key] = new_collect
-        self.find(new_word, new_collect)
+
+        self.find(new_word, new_collect) #keep searching
+    
+    fkey = "".join(sorted(new_word))
+    if not fkey in self.dp:
+      self.dp[fkey] = -1
   
   def isFinished(self, chart):
     for k in xrange(26): #check if has unfinished letters
