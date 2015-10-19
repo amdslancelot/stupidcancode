@@ -54,7 +54,7 @@ class Solution(object):
         
     def helper(self, prefix, s):
         if prefix in self.dp:
-            return #duplicate combination
+            return #skip duplicate combination
         
         if len(s) == 0:
             self.r.append(prefix + self.odd_char + prefix[::-1]) # add odd char & mirror the other half
